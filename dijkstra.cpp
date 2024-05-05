@@ -1,74 +1,64 @@
 #include <iostream>
+#include <limits.h>
 using namespace std;
-
-
-
-int minDistance(int dist[], bool sptSet[], int V)
+int min_vertex(int distance[], int no_of_vertices, bool visited[20])
 {
-	
-	int min = INT_MAX, min_index;
-
-	for (int v = 0; v < V; v++)
-		if (sptSet[v] == false && dist[v] <= min)
-			min = dist[v], min_index = v;
-
+	int min_v = INT_MAX, min_index;
+	for (int i = 0; i < no_of_vertices; i++)
+	{
+		if (distance[i] < min_v && visited[i] == false)
+		{
+			min_v = distance[i];
+			min_index = i;
+		}
+	}
 	return min_index;
 }
-
-
-void printSolution(int dist[],int V)
+void dijkstra(int graph[20][20], int no_of_vertices, int source)
 {
-	printf("Vertex Distance from Source\n");
-	for (int i = 0; i < V; i++)
-		printf("\t%d \t\t\t\t %d\n", i, dist[i]);
-}
-
-void dijkstra(int graph[20][20], int src, int V)
-{
-	int dist[V]; 
-
-	bool sptSet[V]; 
-	
-	for (int i = 0; i < V; i++)
-		dist[i] = INT_MAX, sptSet[i] = false;
-
-	
-	dist[src] = 0;
-
-	// Find shortest path for all vertices
-	for (int count = 0; count < V - 1; count++) {
-		
-		int u = minDistance(dist, sptSet, V);
-
-		
-		sptSet[u] = true;
-
-		
-		for (int v = 0; v < V; v++)
-			if (!sptSet[v] && graph[u][v]
-				&& dist[u] != INT_MAX
-				&& dist[u] + graph[u][v] < dist[v])
-				dist[v] = dist[u] + graph[u][v];
+	int distance[no_of_vertices];
+	bool visited[no_of_vertices];
+	for (int i = 0; i < no_of_vertices; i++)
+	{
+		distance[i] = INT_MAX;
+		visited[i] = false;
 	}
-
-	
-	printSolution(dist, V);
+	distance[source] = 0;
+	for (int i = 0; i < no_of_vertices - 1; i++)
+	{
+		int u = min_vertex(distance, no_of_vertices, visited);
+		visited[u] = true;
+		for (int v = 0; v < no_of_vertices; v++)
+		{
+			if (!visited[v] && graph[u][v] && distance[v] > distance[u] + graph[u][v])
+			{
+				distance[v] = distance[u] + graph[u][v];
+			}
+		}
+	}
+	for (int i = 0; i < no_of_vertices; i++)
+	{
+		cout << "Distance from " << source << " to " << i << " is " << distance[i] << endl;
+	}
 }
-
-
 int main()
 {
-
-	int V;
-    cout<<"Enter the number of vertices:";
-    cin>>V;
-    int graph[20][20];
-    cout<<"Enter the adjacency matrix of the graph"<<endl;
-    for(int i=0;i<V;i++){
-        for(int j=0;j<V;j++){
-            cout<<"G["<<i<<","<<j<<"]";
-            cin>>graph[i][j];
-        }
-    }
-    dijkstra(graph,0,V);
+	int no_of_vertices, source;
+	cout << "Enter the number of vertices : ";
+	cin >> no_of_vertices;
+	int graph[20][20];
+	cout << "Enter the adjacency matrix of the graph" << endl;
+	for (int i = 0; i < no_of_vertices; i++)
+	{
+		for (int j = 0; j < no_of_vertices; j++)
+		{
+			cout << "G[" << i << "][" << j << "] : ";
+			cin >> graph[i][j];
+		}
+	}
+	cout << endl
+		 << "Enter the source vertex: ";
+	cin >> source;
+	dijkstra(graph, no_of_vertices, source);
+	return 0;
 }
