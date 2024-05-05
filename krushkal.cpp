@@ -1,56 +1,75 @@
 #include <iostream>
-#include <climits>
+#include <limits.h>
 using namespace std;
-
-int findSet(int v, int parent[10]) {
-    if (parent[v] == 0)
-        return v;
-    return findSet(parent[v], parent); // Recursively find the root parent
+int findSet(int v, int parent[10])
+{
+    while (parent[v] != 0)
+    {
+        v = parent[v];
+    }
+    return v;
 }
-
-void unionSet(int u, int v, int parent[10]) {
-    int rootU = findSet(u, parent);
-    int rootV = findSet(v, parent);
-    parent[rootV] = rootU; // Merge the sets containing vertices u and v
+int unionSet(int u, int v, int parent[10])
+{
+    while (u != v)
+    {
+        parent[v] = u;
+        return 1;
+    }
+    return 0;
 }
-
-int main() {
-    int n, min, cost[10][10], edge = 0, a, b;
-    int parent[10] = {0};
-
+int main()
+{
+    int n, min, cost[10][10], edge = 1, u, v, a, b, parent[10] = {0};
     cout << "Enter the number of vertices: ";
     cin >> n;
-
-    cout << "Enter the adjacency matrix of the graph: " << endl;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cout << "G[" << i << "][" << j << "]: ";
+    cout << "Enter the adjacency matrix of the graph" << endl;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            cout << "G[" << i << "][" << j << "] : ";
             cin >> cost[i][j];
         }
     }
-
-    cout << "Source \t \t Destination" << endl;
-    while (edge < n - 1) {
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            if (cost[i][j] == 0)
+            {
+                cost[i][j] = INT_MAX;
+            }
+        }
+    }
+    cout << "Source \t\t"
+         << "Destination";
+    while (edge < n)
+    {
         min = INT_MAX;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (cost[i][j] < min) {
-                    // Update minimum edge only when a smaller edge weight is found
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (cost[i][j] < min)
+                {
                     min = cost[i][j];
                     a = i;
+                    u = i;
                     b = j;
+                    v = j;
                 }
             }
         }
-        int u = findSet(a, parent);
-        int v = findSet(b, parent);
-        if (u != v) {
-            cout << a << "\t \t" << b << endl;
-            unionSet(u, v, parent);
-            edge++;
+        u = findSet(u, parent);
+        v = findSet(v, parent);
+        if (unionSet(u, v, parent) != 0)
+        {
+            cout << a << "\t\t" << b << endl;
         }
-        cost[a][b] = INT_MAX; // Mark the selected edge as visited
+        cost[a][b] = INT_MAX;
         cost[b][a] = INT_MAX;
+        edge++;
     }
     return 0;
 }
