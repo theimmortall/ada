@@ -1,22 +1,26 @@
 #include <iostream>
 #include <algorithm>
 using namespace std;
+
 class job
 {
 public:
     int deadLine, profit;
 };
+
 bool compare(job A, job B)
 {
     return A.profit > B.profit;
 }
+
 int main()
 {
     int n;
+    cout << "Enter count of jobs: ";
     cin >> n;
 
     job arr[n];
-
+    cout << "Enter the deadline and profit of each job: ";
     for (int i = 0; i < n; i++)
         cin >> arr[i].deadLine >> arr[i].profit;
 
@@ -33,21 +37,16 @@ int main()
 
         for (int j = deadLine; j >= 1; j--)
         {
-            if (profit[j] == -11)
+            if (profit[j] == -1)
             {
                 profit[j] = arr[i].profit;
+                totalProfit += arr[i].profit; 
                 break;
             }
         }
-
-        for (int i = 0; i < n; i++)
-        {
-            if (profit[i] > -1)
-                totalProfit += profit[i];
-        }
-
-        cout << "Total Profit = " << totalProfit << endl;
-
-        return 0;
     }
+
+    cout << "Total Profit = " << totalProfit << endl;
+
+    return 0;
 }
