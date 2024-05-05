@@ -1,57 +1,53 @@
 #include <iostream>
+#include <limits.h>
 using namespace std;
-
-void BellmanFord(int graph[][3], int V, int E,
-                 int src)
+void BellmanFord(int graph[][3], int V, int E, int src)
 {
-
-    int dis[V];
+    int dist[20];
     for (int i = 0; i < V; i++)
-        dis[i] = INT_MAX;
- 
-    // initialize distance of source as 0
-    dis[src] = 0;
- 
-    
-    for (int i = 0; i < V - 1; i++) {
- 
-        for (int j = 0; j < E; j++) {
-            if (dis[graph[j][0]] != INT_MAX && dis[graph[j][0]] + graph[j][2] <
-                               dis[graph[j][1]])
-                dis[graph[j][1]] = 
-                  dis[graph[j][0]] + graph[j][2];
+    {
+        dist[i] = INT_MAX;
+    }
+    dist[src] = 0;
+    for (int i = 0; i < V - 1; i++)
+    {
+        for (int j = 0; j < E; j++)
+        {
+            if (dist[graph[j][0]] != INT_MAX && dist[graph[j][0]] + graph[j][2] < dist[graph[j][1]])
+            {
+                dist[graph[j][1]] = dist[graph[j][0]] + graph[j][2];
+            }
         }
     }
- 
-
-    for (int i = 0; i < E; i++) {
+    for (int i = 0; i < E; i++)
+    {
         int x = graph[i][0];
         int y = graph[i][1];
         int weight = graph[i][2];
-        if (dis[x] != INT_MAX &&
-                   dis[x] + weight < dis[y])
-            cout << "Graph contains negative"
-                    " weight cycle"
-                 << endl;
+        if (dist[x] != INT_MAX && dist[x] + weight < dist[y])
+        {
+            cout << "\nGraph contains negative weight cycle" << endl;
+        }
     }
- 
-    cout << "Vertex Distance from Source" << endl;
+    cout << "\nVertex \tDistance from Source" << endl;
     for (int i = 0; i < V; i++)
-        cout << i << "\t\t" << dis[i] << endl;
+    {
+        cout << i << "\t\t " << dist[i] << endl;
+    }
 }
- 
-
 int main()
 {
-    int V = 5;
-    int E = 8; 
- 
-   
-    int graph[][3] = { { 0, 1, -1 }, { 0, 2, 4 },
-                       { 1, 2, 3 }, { 1, 3, 2 }, 
-                       { 1, 4, 2 }, { 3, 2, 5 }, 
-                       { 3, 1, 1 }, { 4, 3, -3 } };
- 
+    int V, E;
+    cout << "\nEnter the number of vertices and edges: ";
+    cin >> V >> E;
+    cout << "\nEnter the source, destination vertix and weight: " << endl;
+    int graph[10][3];
+    for (int i = 0; i < E; i++)
+    {
+        cin >> graph[i][0];
+        cin >> graph[i][1];
+        cin >> graph[i][2];
+    }
     BellmanFord(graph, V, E, 0);
     return 0;
 }
